@@ -43,40 +43,41 @@ def value(rule):
 
 grammar = Grammar(start=start, indent=False, tokens = [SSYMBOL, SYMBOL, CSSFN, CSSID, NUMBER, CCOMMENT, NEWLINE, WHITE], ignore = [WHITE, CCOMMENT, NEWLINE], ast_tokens = [])
 
+from css.dom import CSSStyleSheet, CSSStyleRule
+
 t = Translator(grammar)
-
-class CSSStyleSheet(object):
-    def __init__(self, rules=[]):
-        self.rules = list(rules)
-
-class SelectorList(object):
-    def __init__(self, text, selectors):
-        self.selectors = selectors
-        self.text = text
-
-class CSSRule(object):
-    def __init__(self, selectors, attrs):
-        self.selectors = selectors
-        self.attrs = attrs
 
 ast = grammar.ast_classes
 
 @t.translates(ast.start)
 def _start(node, scope):
-    return CSSStyleSheet(t.translate(rule, scope) for rule in node.body)
+    return CSSStyleSheet(
+            scope.title,
+            scope.href,
+            scope.media,
+            list(t.translate(rule, scope) for rule in node.body)
+        )
 
 @t.translates(ast.declare)
 def _declare(node, scope):
-    selectors = t.translate(node.selectors, scope)
-    return CSSRule(selectors, dict(t.translate(attr, scope) for attr in node.body))
+    # selectors = t.translate(node.selectors, scope)
+    return CSSStyleRule(
+            str(node.selectors),
+            str(node),
+            dict(t.translate(attr, scope) for attr in node.body)
+        )
 
+'''
 @t.translates(ast.selectors)
 def _selectors(node, scope):
     return SelectorList(str(node), (t.translate(sel) for sel in node.selectors))
+'''
 
+'''
 @t.translates(ast.selector)
 def _selector(node, scope):
     return str(node)
+    '''
 
 @t.translates(ast.attr)
 def _attr(node, scope):
