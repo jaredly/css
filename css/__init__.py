@@ -1,4 +1,3 @@
-
 from grammar import grammar, t
 
 def parseString(text, title=None, href=None, media='screen'):

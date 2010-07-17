@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 class CSSStyleSheet:
     def __init__(self, title, href, media, rules):
         self.cssrules = self.rules = rules
@@ -21,4 +19,3 @@ class CSSStyleRule:
         self.selectorText = selectors
         self.style = style
 
-# vim: et sw=4 sts=4
