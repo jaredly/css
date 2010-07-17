@@ -18,7 +18,7 @@ class CSSID(ReToken):
     rx = re.compile(r'[\w-]+')
 
 class SSYMBOL(StringToken):
-    items = list('.>:#%')
+    items = list('*.>:#%')
 
 class SYMBOL(StringToken):
     items = list('{};,')
