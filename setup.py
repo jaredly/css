@@ -3,6 +3,8 @@
 from distutils.core import setup
 import os
 
+from disttest import test
+
 setup(
     name='css',
     author='Jared Forsyth',
@@ -16,6 +18,12 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python'
     ],
+    cmdclass={'test': test},
+    options={
+        'test': {
+            'test_dir': ['tests'],
+        },
+    },
 )
 
 
