@@ -1,6 +1,12 @@
 from grammar import grammar, t
+from dom import CSSStyleSheet
 
 def parseString(text, title=None, href=None, media='screen'):
-    return t.from_string(text, title=title, href=href, media=media)
+    return CSSStyleSheet(
+            title,
+            href,
+            media,
+            t.from_string(text)
+        )
 
 # vim: et sw=4 sts=4
