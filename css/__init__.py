@@ -1,4 +1,4 @@
-from grammar import grammar, t
+import grammar
 from dom import CSSStyleSheet
 
 def parseString(text, title=None, href=None, media='screen'):

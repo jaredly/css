@@ -1,2 +1,4 @@
 *.vim.sess
 *.pyc
+build/
+*.swp

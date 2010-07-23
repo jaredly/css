@@ -1,3 +1,4 @@
+
 class CSSStyleSheet:
     def __init__(self, title, href, media, rules):
         self.cssrules = self.rules = rules
