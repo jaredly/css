@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from css.tokens import *
-from codetalker.pgm.special import commas, star, plus, _or, no_ignore
+from codetalker.pgm.special import commas, star, plus, _or, no_ignore, _not
 from codetalker.pgm import Grammar
 
 def cssid(rule):
@@ -111,6 +111,7 @@ def pseudo(rule):
 
 def declaration(rule):
     rule | (cssid, ':', plus(value), [important])
+    rule | star(_not(_or(';', '}')))
     rule.astAttrs = {
         'property':{'type':cssid, 'single':True},
         'values':[value],

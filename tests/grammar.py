@@ -44,6 +44,16 @@ parse_rule(grammar.ruleset, (
         color: green;
     }''', '''ul#one {
         margin: 0 2px;
+        lots of random junk;
     }'''))
+
+if __name__ == '__main__':
+    for name, fn in sorted(globals().items()):
+        if name.startswith('test_'):
+            print 'testing', name
+            fn()
+            print 'test passed'
+    print 'Finished!'
+
 
 # vim: et sw=4 sts=4

@@ -1,4 +1,4 @@
-import newgrammar as grammar
+import grammar
 from dom import CSSStyleSheet
 
 def parseString(text, title=None, href=None, media='screen'):
