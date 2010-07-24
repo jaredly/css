@@ -2,11 +2,13 @@
 
 from codetalker import testing
 
-from css import grammar as css
+import css.newgrammar as grammar
+import css.values
+# from css import newgrammar as css
 
-parse_rule = testing.parse_rule(__name__, css.grammar)
+parse_rule = testing.parse_rule(__name__, grammar.grammar)
 
-parse_rule(css.length, (
+parse_rule(css.values.length, (
     '10',
     '-10',
     '10px',
@@ -20,7 +22,7 @@ parse_rule(css.length, (
     '-em',
     ))
 
-parse_rule(css.percentage, (
+parse_rule(css.values.percentage, (
     '115%',
     '20%',
     '43.2%',
@@ -31,7 +33,21 @@ parse_rule(css.percentage, (
     '1.4 %',
     ))
 
-parse_rule(css.class_, (
+parse_rule(css.values.value, (
+    '20%',
+    '-15.3 px',
+    'green',
+    '#123',
+    '#FFFaab',
+    'url(http://example.com/favicon.png)',
+    'rgb(0, 0, 100%)',
+    ), (
+    '#12',
+    '#FfFfFfF',
+    'oranges',
+    ))
+
+parse_rule(grammar.class_, (
     '.one',
     '.green',
     '.GReEn',
@@ -40,7 +56,7 @@ parse_rule(css.class_, (
     'one',
     ))
 
-parse_rule(css.selector_part, (
+parse_rule(grammar.simple_selector, (
     'div',
     'div#some',
     'div#one.green',
@@ -54,6 +70,19 @@ parse_rule(css.selector_part, (
     'div. one',
     ))
 
+parse_rule(grammar.selector, (
+    'div li > table#man.foo',
+    '#some.one td:hover',
+    'body a a + div',
+    ), (
+    'one',
+    '',
+    ))
+
+parse_rule(grammar.ruleset, (
+    '''div {
+        color: green;
+    }''', ))
 
 
 # vim: et sw=4 sts=4
