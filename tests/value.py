@@ -2,7 +2,7 @@
 
 from codetalker import testing
 
-import css.newgrammar as grammar
+import css.grammar as grammar
 import css.values
 # from css import newgrammar as css
 
@@ -46,43 +46,5 @@ parse_rule(css.values.value, (
     '#FfFfFfF',
     'oranges',
     ))
-
-parse_rule(grammar.class_, (
-    '.one',
-    '.green',
-    '.GReEn',
-    '.div',
-    ), (
-    'one',
-    ))
-
-parse_rule(grammar.simple_selector, (
-    'div',
-    'div#some',
-    'div#one.green',
-    'div.frown',
-    'ul.cheese:first-child',
-    'li.one.two.three',
-    'a#b.c.d:last-child',
-    ), (
-    'one',
-    'div# and',
-    'div. one',
-    ))
-
-parse_rule(grammar.selector, (
-    'div li > table#man.foo',
-    '#some.one td:hover',
-    'body a a + div',
-    ), (
-    'one',
-    '',
-    ))
-
-parse_rule(grammar.ruleset, (
-    '''div {
-        color: green;
-    }''', ))
-
 
 # vim: et sw=4 sts=4
