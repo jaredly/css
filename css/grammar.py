@@ -10,7 +10,7 @@ def cssid(rule):
     rule.dont_ignore = True
     rule.astAttrs = {'parts': (SYMBOL, ) + ids}
 
-def stylesheet(rule):
+def style_sheet(rule):
     rule | ([charset], star(import_), star(section))
     rule.astAttrs = {
             'charset': charset,
@@ -20,10 +20,10 @@ def stylesheet(rule):
 
 def charset(rule):
     rule | (no_ignore('@', 'charset'), _or(STRING, SSTRING), ';')
-    rule.astAttrs = {'name':{'type':[STRING, SSTRING],'single':True}}
+    rule.pass_single = True
 
 def section(rule):
-    rule | ruleset | media | page | font_face
+    rule | media | page | font_face | ruleset
     rule.pass_single = True
 
 def import_(rule):
@@ -58,11 +58,12 @@ def font_face(rule):
     }
 
 def ruleset(rule):
-    rule | (commas(selector, False), block)
+    rule | (commas(selector, False), block) | (plus(_not('}')), '}')
     rule.astAttrs = {
         'selectors': [selector],
         'rules':[declaration],
     }
+    rule.keep_tree = True
 
 def selector(rule):
     rule | (simple_selector, star([_or('+', '>')], simple_selector))
@@ -72,7 +73,7 @@ def selector(rule):
 
 def simple_selector(rule):
     postops = hash, class_, attrib, pseudo
-    rule | (NODE_NAME, star(_or(postops)))
+    rule | (_or(NODE_NAME, '*'), star(_or(postops)))
     rule | plus(_or(postops))
     rule.astAttrs = {
         'node': NODE_NAME,
@@ -80,18 +81,18 @@ def simple_selector(rule):
     }
 
 def hash(rule):
-    rule | ('#', cssid)
+    rule | ('#', cssid) | (HEXCOLOR, [cssid])
     rule.dont_ignore = True
-    rule.astAttrs = {'name':{'type':cssid,'single':True}}
+    rule.astAttrs = {'name':[cssid, HEXCOLOR]}
 
 def class_(rule):
     rule | ('.', cssid)
     rule.dont_ignore = True
-    rule.astAttrs = {'name':{'type':cssid,'single':True}}
+    rule.pass_single = True
 
 def attrib(rule):
     rule | ('[', cssid, _or('=', no_ignore('|','='), no_ignore('~','=')),
-            _or(cssid, _or(STRING, SSTRING)))
+            _or(cssid, STRING, SSTRING), ']')
     rule.astAttrs = {
         'name':cssid,
         'op':[SYMBOL],
@@ -105,18 +106,19 @@ def attrib(rule):
 def pseudo(rule):
     rule | (':', cssid, ['(', cssid, ')'])
     rule.astAttrs = {
-        'name':{'type':cssid, 'single':True},
-        'args':{'type':cssid, 'single':True, 'start':1},
+        'name':cssid,
+        'arg':{'type':cssid, 'start':1},
     }
 
 def declaration(rule):
     rule | (cssid, ':', plus(value), [important])
-    rule | star(_not(_or(';', '}')))
+    rule | plus(_not(_or(';', '}')))
     rule.astAttrs = {
-        'property':{'type':cssid, 'single':True},
+        'property':cssid,
         'values':[value],
         'important':important,
     }
+    rule.keep_tree = True
 
 def important(rule):
     rule | ('!', 'important')
@@ -126,7 +128,8 @@ from values import value
 
 block = '{', commas(declaration, True, ';'), '}'
 
-grammar = Grammar(start=stylesheet, tokens = the_tokens,
-                  ignore = [WHITE, CMCOMMENT, NEWLINE])
+grammar = Grammar(start=style_sheet, tokens = the_tokens,
+                  ignore = [WHITE, CMCOMMENT, NEWLINE],
+                  ast_tokens = [COLOR, HEXCOLOR, URI, STRING, SSTRING])
 
 # vim: et sw=4 sts=4

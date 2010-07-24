@@ -15,7 +15,8 @@ from css.tokens import *
 from codetalker.pgm.special import commas, no_ignore, _or
 
 def value(rule):
-    rule | COLOR | HEXCOLOR | percentage | length | URI | rgb | rgba
+    from css.grammar import cssid
+    rule | COLOR | HEXCOLOR | percentage | length | URI | rgb | rgba | cssid | ',' | STRING | SSTRING
     rule.pass_single = True
 
 def length(rule):
