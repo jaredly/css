@@ -63,7 +63,7 @@ def ruleset(rule):
         'selectors': [selector],
         'rules':[declaration],
     }
-    rule.keep_tree = True
+    # rule.keep_tree = True
 
 def selector(rule):
     rule | (simple_selector, star([_or('+', '>')], simple_selector))
@@ -75,6 +75,7 @@ def simple_selector(rule):
     postops = hash, class_, attrib, pseudo
     rule | (_or(NODE_NAME, '*'), star(_or(postops)))
     rule | plus(_or(postops))
+    rule.dont_ignore = True
     rule.astAttrs = {
         'node': NODE_NAME,
         'post': postops,
@@ -111,14 +112,25 @@ def pseudo(rule):
     }
 
 def declaration(rule):
-    rule | (cssid, ':', plus(value), [important])
-    rule | plus(_not(_or(';', '}')))
+    rule | (cssid, ':', plus(value), [important], ';')
+    rule | (plus(_not(_or(';', '}'))), ';')
+    rule.astAttrs = {
+        'property':cssid,
+        'values':[value],
+        'important':important,
+    }
+    # rule.keep_tree = True
+
+def declaration_end(rule):
+    rule | (cssid, ':', plus(value), [important], '}')
+    rule | (plus(_not(_or(';', '}'))), '}')
     rule.astAttrs = {
         'property':cssid,
         'values':[value],
         'important':important,
     }
     rule.keep_tree = True
+declaration_end.astName = 'Declaration'
 
 def important(rule):
     rule | ('!', 'important')
@@ -126,7 +138,7 @@ def important(rule):
 
 from values import value
 
-block = '{', commas(declaration, True, ';'), '}'
+block = '{', star(declaration), _or(declaration_end, '}')
 
 grammar = Grammar(start=style_sheet, tokens = the_tokens,
                   ignore = [WHITE, CMCOMMENT, NEWLINE],

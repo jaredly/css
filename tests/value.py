@@ -44,7 +44,6 @@ parse_rule(css.values.value, (
     ), (
     '#12',
     '#FfFfFfF',
-    'oranges',
     ))
 
 # vim: et sw=4 sts=4
