@@ -34,7 +34,7 @@ def import_(rule):
     }
 
 def import_from(rule):
-    rule | STRING | URI
+    rule | STRING | uri
     rule.pass_single = True
 
 def media(rule):
@@ -136,12 +136,12 @@ def important(rule):
     rule | ('!', 'important')
     rule.dont_ignore = True
 
-from values import value
+from values import value, uri
 
 block = '{', star(declaration), _or(declaration_end, '}')
 
 grammar = Grammar(start=style_sheet, tokens = the_tokens,
                   ignore = [WHITE, CMCOMMENT, NEWLINE],
-                  ast_tokens = [COLOR, HEXCOLOR, URI, STRING, SSTRING])
+                  ast_tokens = [COLOR, HEXCOLOR, STRING, SSTRING])
 
 # vim: et sw=4 sts=4

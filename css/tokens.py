@@ -12,8 +12,8 @@ class SYMBOL(CharToken):
 class HTMLCOMMENT(StringToken):
     strings = '<!--', '-->'
 
-class URI(ReToken):
-    rx = re.compile(r'url\([^)]*\)')
+# class URI(ReToken):
+ #    rx = re.compile(r'url\([^)]*\)')
 
 class UNIT(IIdToken):
     strings = 'em', 'px', 'pt', 'mm', 'cm', 'rad', 'deg', 'grad', 'in'
@@ -27,6 +27,6 @@ class NODE_NAME(IIdToken):
 class HEXCOLOR(ReToken):
     rx = re.compile(r'#([\da-fA-F]{6}|[\da-fA-F]{3})')
 
-the_tokens = [NUMBER, HEXCOLOR, CMCOMMENT, HTMLCOMMENT, SYMBOL, UNIT, COLOR, NODE_NAME, STRING, SSTRING, URI, ID, WHITE, NEWLINE, ANY]
+the_tokens = [NUMBER, HEXCOLOR, CMCOMMENT, HTMLCOMMENT, SYMBOL, UNIT, COLOR, NODE_NAME, STRING, SSTRING, ID, WHITE, NEWLINE, ANY]
 
 # vim: et sw=4 sts=4

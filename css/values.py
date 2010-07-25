@@ -12,11 +12,11 @@
 '''
 
 from css.tokens import *
-from codetalker.pgm.special import commas, no_ignore, _or
+from codetalker.pgm.special import commas, no_ignore, _or, star, _not
 
 def value(rule):
     from css.grammar import cssid
-    rule | COLOR | HEXCOLOR | percentage | length | URI | rgb | rgba | cssid | ',' | STRING | SSTRING
+    rule | COLOR | HEXCOLOR | percentage | length | uri | rgb | rgba | cssid | ',' | STRING | SSTRING
     rule.pass_single = True
 
 def length(rule):
@@ -26,6 +26,19 @@ def length(rule):
 def percentage(rule):
     rule | (['-'], no_ignore(NUMBER, '%'))
     rule.astAttrs = {'neg':SYMBOL, 'value':NUMBER}
+
+def uri(rule):
+    rule | ('url', '(', _or(STRING, SSTRING, uri_contents), ')')
+    rule.astAttrs = {
+        'uri':{'type':[STRING, SSTRING, uri_contents], 'single':True}
+    }
+
+def uri_contents(rule):
+    rule | star(_not(')'))
+    rule.dont_ignore = True
+    rule.astAttrs = {
+        'items':the_tokens,
+        }
 
 def rgb(rule):
     rule | ('rgb', '(', ((_or(percentage, NUMBER), ',')*3)[:-1], ')')
